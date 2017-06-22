@@ -21,9 +21,9 @@ public class ChatMessage extends BaseEntity {
 
     private Chat chat;
 
-    private ChatterUser sender;
+    private String sender;
 
-    private ChatterUser receiver;
+    private String receiver;
 
     private boolean read;
 
@@ -54,23 +54,19 @@ public class ChatMessage extends BaseEntity {
         this.chat = chat;
     }
 
-    @ManyToOne
-    @JoinColumn(name = "sender_id", nullable = false)
-    public ChatterUser getSender() {
+    public String getSender() {
         return sender;
     }
 
-    public void setSender(ChatterUser sender) {
+    public void setSender(String sender) {
         this.sender = sender;
     }
 
-    @ManyToOne
-    @JoinColumn(name = "receiver_id", nullable = false)
-    public ChatterUser getReceiver() {
+    public String getReceiver() {
         return receiver;
     }
 
-    public void setReceiver(ChatterUser receiver) {
+    public void setReceiver(String receiver) {
         this.receiver = receiver;
     }
 
@@ -94,7 +90,7 @@ public class ChatMessage extends BaseEntity {
             return false;
         }
 
-        final Chat ds = (Chat) object;
+        final ChatMessage ds = (ChatMessage) object;
 
         return new EqualsBuilder().append(getId(), ds.getId()).isEquals();
     }

@@ -23,7 +23,7 @@ public class ChatterUser extends BaseEntity {
 
     private Role role;
 
-    @Column(name = "username", length = 100)
+    @Column(name = "username", length = 100, unique = true)
     public String getUsername() {
         return username;
     }
@@ -49,7 +49,7 @@ public class ChatterUser extends BaseEntity {
         this.online = online;
     }
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "chatter_role_id", nullable = false)
     @JsonIgnore
     public Role getRole() {

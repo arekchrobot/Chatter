@@ -29,6 +29,7 @@ public class Chat extends BaseEntity {
     }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "chat")
+    @OrderColumn(name = "created")
     public List<ChatMessage> getMessages() {
         return messages;
     }
