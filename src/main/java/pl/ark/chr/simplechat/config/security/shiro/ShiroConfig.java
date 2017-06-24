@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import pl.ark.chr.simplechat.ChatterProperties;
+import pl.ark.chr.simplechat.service.ChatterUserService;
 
 import javax.servlet.Filter;
 import java.util.HashMap;
@@ -29,6 +30,9 @@ public class ShiroConfig {
     @Autowired
     private ChatterProperties chatterProperties;
 
+    @Autowired
+    private ChatterUserService chatterUserService;
+
     @Bean
     public ShiroFilterFactoryBean shiroFilter() {
         ShiroFilterFactoryBean shiroFilter = new ShiroFilterFactoryBean();
@@ -36,8 +40,8 @@ public class ShiroConfig {
 
         Map<String, String> filterChainDefinitionMapping = new HashMap<>();
         filterChainDefinitionMapping.put("/api/auth/login", "anon");
-        filterChainDefinitionMapping.put("/api/auth/logout", "authc");
-        filterChainDefinitionMapping.put("/api/ext/notify/**", "anon");
+        filterChainDefinitionMapping.put("/api/auth/signout", "authc");
+        filterChainDefinitionMapping.put("/api/**", "authc");
         shiroFilter.setFilterChainDefinitionMap(filterChainDefinitionMapping);
 
         Map<String, Filter> filters = new HashMap<>();
@@ -67,7 +71,7 @@ public class ShiroConfig {
     @Bean(name = "realm")
     @DependsOn("lifecycleBeanPostProcessor")
     public AuthorizingRealm realm() {
-        AuthorizingRealm realm = new ChatterAuthorizingRealm();
+        AuthorizingRealm realm = new ChatterAuthorizingRealm(chatterUserService);
         realm.setCredentialsMatcher(credentialsMatcher());
         return realm;
     }

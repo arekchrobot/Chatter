@@ -8,6 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import pl.ark.chr.simplechat.exceptions.RestException;
 import pl.ark.chr.simplechat.util.ExceptionWrapper;
 import pl.ark.chr.simplechat.util.HttpUtil;
 
@@ -24,13 +25,35 @@ public class RestExceptionHandler {
 
     private Logger LOGGER = LoggerFactory.getLogger(RestExceptionHandler.class);
 
+    @ExceptionHandler(value = {RestException.class})
+    public ResponseEntity<ExceptionWrapper> restExceptionHandler(HttpServletRequest request, Locale locale, RestException e) {
+        logRequest(request, e);
+
+        ExceptionWrapper error = new ExceptionWrapper(e.getStatus().value(),e.getMessage());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+        return new ResponseEntity<>(error, headers, e.getStatus());
+    }
+
     @ExceptionHandler(value = {RuntimeException.class})
     public ResponseEntity<ExceptionWrapper> runtimeErrorHandler(HttpServletRequest request, Locale locale, RuntimeException e) {
+        logRequest(request, e);
+
+        ExceptionWrapper error = new ExceptionWrapper(HttpStatus.INTERNAL_SERVER_ERROR.value(),"Internal server error");
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+        return new ResponseEntity<>(error, headers, HttpStatus.valueOf(error.getStatus()));
+    }
+
+    private void logRequest(HttpServletRequest request, RuntimeException e) {
         try {
             String loggerMsg = new StringBuffer(70)
                     .append("Error executing url: ")
                     .append(HttpUtil.generateOriginalUrl(request))
-                    .append("POST".equalsIgnoreCase(request.getMethod()) ? request.getReader().lines().collect(Collectors.joining(System.lineSeparator())) : "")
+                    .append("POST".equalsIgnoreCase(request.getMethod()) ?
+                            request.getReader().lines().collect(Collectors.joining(System.lineSeparator())) : "")
                     .append(". With exception: ")
                     .append(e.toString())
                     .toString();
@@ -38,11 +61,5 @@ public class RestExceptionHandler {
         } catch (IOException ex) {
             LOGGER.info("No post body found for exception.");
         }
-
-        ExceptionWrapper error = new ExceptionWrapper(HttpStatus.INTERNAL_SERVER_ERROR.value(),"Internal server error");
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-        return new ResponseEntity<>(error, headers, HttpStatus.valueOf(error.getStatus()));
     }
 }

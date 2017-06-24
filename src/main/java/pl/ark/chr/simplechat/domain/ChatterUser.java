@@ -19,8 +19,6 @@ public class ChatterUser extends BaseEntity {
 
     private String password;
 
-    private boolean online;
-
     private Role role;
 
     @Column(name = "username", length = 100, unique = true)
@@ -39,14 +37,6 @@ public class ChatterUser extends BaseEntity {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public boolean isOnline() {
-        return online;
-    }
-
-    public void setOnline(boolean online) {
-        this.online = online;
     }
 
     @ManyToOne(fetch = FetchType.LAZY)

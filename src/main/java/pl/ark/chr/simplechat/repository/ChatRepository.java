@@ -12,5 +12,5 @@ import java.util.List;
 public interface ChatRepository extends CrudRepository<Chat, Long> {
 
     @Query("SELECT c FROM Chat c JOIN FETCH c.messages WHERE c.name LIKE %?1%")
-    List<Chat> findByNameLikeAndFetchMessagesEagerly(Long id);
+    List<Chat> findByNameLikeAndFetchMessagesEagerly(String name);
 }
