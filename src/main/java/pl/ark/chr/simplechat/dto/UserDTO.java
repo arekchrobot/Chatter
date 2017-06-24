@@ -2,6 +2,7 @@ package pl.ark.chr.simplechat.dto;
 
 import pl.ark.chr.simplechat.domain.Chat;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,7 +14,7 @@ public class UserDTO {
 
     private String socketToken;
 
-    private List<Chat> chats;
+    private List<Chat> chats = new ArrayList<>();
 
     public UserDTO() {
     }

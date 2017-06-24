@@ -9,12 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestBody;
 import pl.ark.chr.simplechat.dto.CredentialsDTO;
+import pl.ark.chr.simplechat.dto.RegisterDTO;
 import pl.ark.chr.simplechat.dto.UserDTO;
 import pl.ark.chr.simplechat.exceptions.RestException;
 import pl.ark.chr.simplechat.rest.annotations.GET;
 import pl.ark.chr.simplechat.rest.annotations.POST;
 import pl.ark.chr.simplechat.rest.annotations.RestController;
 import pl.ark.chr.simplechat.service.ChatterUserService;
+import pl.ark.chr.simplechat.service.RegisterService;
 import pl.ark.chr.simplechat.service.impl.ChatterUserServiceImpl;
 import pl.ark.chr.simplechat.util.SessionUtil;
 
@@ -32,10 +34,13 @@ public class AuthEndpoint extends BaseRestEndpoint {
 
     private ChatterUserService chatterUserService;
 
+    private RegisterService registerService;
+
     @Autowired
-    public AuthEndpoint(SessionUtil sessionUtil, ChatterUserService chatterUserService) {
+    public AuthEndpoint(SessionUtil sessionUtil, ChatterUserService chatterUserService, RegisterService registerService) {
         super(sessionUtil);
         this.chatterUserService = chatterUserService;
+        this.registerService = registerService;
     }
 
     @POST("/login")
@@ -70,5 +75,12 @@ public class AuthEndpoint extends BaseRestEndpoint {
     @GET("/logged")
     public UserDTO isLogged(HttpServletRequest request) {
         return sessionUtil.getCurrentUser(request);
+    }
+
+    @POST("/register")
+    public UserDTO register(HttpServletRequest request, @RequestBody RegisterDTO register) {
+        LOGGER.info("Registering user with username: " + register.getUsername());
+
+        return registerService.register(register);
     }
 }
