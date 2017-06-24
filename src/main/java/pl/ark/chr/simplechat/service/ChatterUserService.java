@@ -4,6 +4,7 @@ import pl.ark.chr.simplechat.domain.ChatterUser;
 import pl.ark.chr.simplechat.dto.CredentialsDTO;
 import pl.ark.chr.simplechat.dto.UserDTO;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -14,4 +15,6 @@ public interface ChatterUserService {
     UserDTO login(CredentialsDTO credentials);
 
     Optional<ChatterUser> getByUsername(String username);
+
+    List<ChatterUser> getAll();
 }

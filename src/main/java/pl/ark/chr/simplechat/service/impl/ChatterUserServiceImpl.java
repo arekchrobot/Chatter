@@ -13,7 +13,9 @@ import pl.ark.chr.simplechat.repository.ChatRepository;
 import pl.ark.chr.simplechat.repository.ChatterUserRepository;
 import pl.ark.chr.simplechat.service.ChatterUserService;
 import pl.ark.chr.simplechat.util.ValidationUtil;
+import pl.ark.chr.simplechat.websocket.service.WebSocketTokenService;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -30,11 +32,14 @@ public class ChatterUserServiceImpl implements ChatterUserService {
 
     private ChatRepository chatRepository;
 
+    private WebSocketTokenService webSocketTokenService;
 
     @Autowired
-    public ChatterUserServiceImpl(ChatterUserRepository chatterUserRepository, ChatRepository chatRepository) {
+    public ChatterUserServiceImpl(ChatterUserRepository chatterUserRepository, ChatRepository chatRepository,
+                                  WebSocketTokenService webSocketTokenService) {
         this.chatterUserRepository = chatterUserRepository;
         this.chatRepository = chatRepository;
+        this.webSocketTokenService = webSocketTokenService;
     }
 
     @Override
@@ -55,12 +60,18 @@ public class ChatterUserServiceImpl implements ChatterUserService {
         return UserDTO.builder()
                 .username(user.getUsername())
                 .chats(chatRepository.findByNameLikeAndFetchMessagesEagerly(user.getUsername()))
+                .socketToken(webSocketTokenService.generateTokenForUser(user))
                 .build();
     }
 
     @Override
     public Optional<ChatterUser> getByUsername(String username) {
         return chatterUserRepository.findByUsername(username);
+    }
+
+    @Override
+    public List<ChatterUser> getAll() {
+        return (List<ChatterUser>) chatterUserRepository.findAll();
     }
 
     private void validateCredentials(CredentialsDTO credentials) {

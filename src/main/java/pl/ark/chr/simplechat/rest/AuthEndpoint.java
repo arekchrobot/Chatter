@@ -19,6 +19,8 @@ import pl.ark.chr.simplechat.service.ChatterUserService;
 import pl.ark.chr.simplechat.service.RegisterService;
 import pl.ark.chr.simplechat.service.impl.ChatterUserServiceImpl;
 import pl.ark.chr.simplechat.util.SessionUtil;
+import pl.ark.chr.simplechat.util.TokenGenerator;
+import pl.ark.chr.simplechat.websocket.service.WebSocketTokenService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -36,8 +38,11 @@ public class AuthEndpoint extends BaseRestEndpoint {
 
     private RegisterService registerService;
 
+    private WebSocketTokenService webSocketTokenService;
+
     @Autowired
-    public AuthEndpoint(SessionUtil sessionUtil, ChatterUserService chatterUserService, RegisterService registerService) {
+    public AuthEndpoint(SessionUtil sessionUtil, ChatterUserService chatterUserService, RegisterService registerService,
+                        WebSocketTokenService webSocketTokenService) {
         super(sessionUtil);
         this.chatterUserService = chatterUserService;
         this.registerService = registerService;
@@ -69,6 +74,10 @@ public class AuthEndpoint extends BaseRestEndpoint {
         LOGGER.info("Logging out user: " + username);
 
         SecurityUtils.getSubject().logout();
+
+        String token = TokenGenerator.generateToken(username);
+
+        webSocketTokenService.removeToken(token);
         sessionUtil.removeCurrentUser(request);
     }
 

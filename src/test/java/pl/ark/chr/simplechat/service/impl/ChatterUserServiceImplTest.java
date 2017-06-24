@@ -13,6 +13,7 @@ import pl.ark.chr.simplechat.dto.UserDTO;
 import pl.ark.chr.simplechat.exceptions.RestException;
 import pl.ark.chr.simplechat.repository.ChatRepository;
 import pl.ark.chr.simplechat.repository.ChatterUserRepository;
+import pl.ark.chr.simplechat.websocket.service.WebSocketTokenService;
 import pl.wkr.fluentrule.api.FluentExpectedException;
 
 import java.util.ArrayList;
@@ -37,12 +38,16 @@ public class ChatterUserServiceImplTest {
     @Mock
     private ChatRepository chatRepository;
 
+    @Mock
+    private WebSocketTokenService webSocketTokenService;
+
     @Rule
     public FluentExpectedException fluentThrown = FluentExpectedException.none();
 
     @Before
     public void setUp() throws Exception {
-        sut = new ChatterUserServiceImpl(chatterUserRepository, chatRepository);
+        sut = new ChatterUserServiceImpl(chatterUserRepository, chatRepository, webSocketTokenService);
+        when(webSocketTokenService.generateTokenForUser(any(ChatterUser.class))).thenReturn("TEST_TOKEN");
     }
 
     @Test
@@ -75,6 +80,9 @@ public class ChatterUserServiceImplTest {
                 .isNotEmpty()
                 .isEqualTo(username);
         assertThat(result.getChats())
+                .isNotNull()
+                .isNotEmpty();
+        assertThat(result.getSocketToken())
                 .isNotNull()
                 .isNotEmpty();
     }
