@@ -6,11 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import pl.ark.chr.simplechat.rest.annotations.POSTTextPlain;
+import pl.ark.chr.simplechat.rest.annotations.PUT;
 import pl.ark.chr.simplechat.rest.annotations.RestController;
 import pl.ark.chr.simplechat.service.MessageService;
 import pl.ark.chr.simplechat.util.SessionUtil;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by Arek on 2017-06-24.
@@ -33,6 +36,25 @@ public class RestMessageEndpoint extends BaseRestEndpoint {
         LOGGER.info("Sending message to user: " + receiver + " from user: " + sessionUtil.getCurrentUser(request).getUsername());
 
         messageService.sendMessageToUser(content, sessionUtil.getCurrentUser(request), receiver);
+
+        return true;
+    }
+
+    @PUT("/markRead/{messageId}")
+    public boolean markMessageRead(HttpServletRequest request, @PathVariable("messageId") Long messageId) {
+        LOGGER.info("Marking message with id: " + messageId + " for user: " + sessionUtil.getCurrentUser(request).getUsername());
+
+        messageService.markChatMessageRead(sessionUtil.getCurrentUser(request), messageId);
+
+        return true;
+    }
+
+    @PUT("/markAllRead/{messagesId}")
+    public boolean markMessagesRead(HttpServletRequest request, @PathVariable("messageId") List<Long> messagesId) {
+        LOGGER.info("Marking messages with ids: " + messagesId.stream().map(Object::toString).collect(Collectors.joining(","))
+                + " for user: " + sessionUtil.getCurrentUser(request).getUsername());
+
+        messageService.markChatMessagesRead(sessionUtil.getCurrentUser(request), messagesId);
 
         return true;
     }

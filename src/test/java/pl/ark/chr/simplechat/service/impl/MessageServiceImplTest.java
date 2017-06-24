@@ -216,4 +216,104 @@ public class MessageServiceImplTest {
         //then
     }
 
+    @Test
+    public void testMarkChatMessageRead__Success() {
+        //given
+        String receiver = "receiver";
+
+        UserDTO currentUser = UserDTO.builder().username(receiver).build();
+
+        Long messageId = 1L;
+        ChatMessage message = new ChatMessage();
+        message.setReceiver(receiver);
+        message.setId(messageId);
+
+        when(chatMessageRepository.findOne(any(Long.class))).thenReturn(message);
+
+        doAnswer(invocationOnMock -> {
+            ChatMessage chatMessage = (ChatMessage) invocationOnMock.getArguments()[0];
+
+            assertThat(chatMessage)
+                    .isEqualTo(message);
+            assertThat(chatMessage.isRead())
+                    .isTrue();
+            return chatMessage;
+        }).when(chatMessageRepository).save(any(ChatMessage.class));
+
+        //when
+        sut.markChatMessageRead(currentUser, messageId);
+
+        //then
+    }
+
+    @Test
+    public void testMarkChatMessageRead__ReceiversDoNotMatch() {
+        //given
+        String receiver = "receiver";
+        String messageReceiver = "msgReceiver";
+
+        UserDTO currentUser = UserDTO.builder().username(receiver).build();
+
+        Long messageId = 1L;
+        ChatMessage message = new ChatMessage();
+        message.setReceiver(messageReceiver);
+        message.setId(messageId);
+
+        when(chatMessageRepository.findOne(any(Long.class))).thenReturn(message);
+
+        fluentThrown
+                .expect(RestException.class)
+                .hasMessage(MessageServiceImpl.WRONG_RECEIVER);
+
+        //when
+        sut.markChatMessageRead(currentUser, messageId);
+
+        //then
+    }
+
+    @Test
+    public void testMarkChatMessageRead__NullReceiver() {
+        //given
+        String receiver = "receiver";
+
+        Long messageId = 1L;
+        ChatMessage message = new ChatMessage();
+        message.setReceiver(receiver);
+        message.setId(messageId);
+
+        when(chatMessageRepository.findOne(any(Long.class))).thenReturn(message);
+
+        fluentThrown
+                .expect(RestException.class)
+                .hasMessage(MessageServiceImpl.EMPTY_RECEIVER);
+
+        //when
+        sut.markChatMessageRead(null, messageId);
+
+        //then
+    }
+
+    @Test
+    public void testMarkChatMessageRead__MessageNotExists() {
+        //given
+        String receiver = "receiver";
+
+        UserDTO currentUser = UserDTO.builder().username(receiver).build();
+
+        Long messageId = 1L;
+        ChatMessage message = new ChatMessage();
+        message.setReceiver(receiver);
+        message.setId(messageId);
+
+        when(chatMessageRepository.findOne(any(Long.class))).thenReturn(null);
+
+        fluentThrown
+                .expect(RestException.class)
+                .hasMessage(MessageServiceImpl.EMPTY_MSG);
+
+        //when
+        sut.markChatMessageRead(currentUser, messageId);
+
+        //then
+    }
 }

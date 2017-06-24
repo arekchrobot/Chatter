@@ -21,6 +21,7 @@ import pl.ark.chr.simplechat.util.ValidationUtil;
 import pl.ark.chr.simplechat.websocket.MessageEndpoint;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -36,6 +37,9 @@ public class MessageServiceImpl implements MessageService {
     public static final String EMPTY_CONTENT = "Content cannot be empty";
     public static final String EMPTY_RECEIVER = "Receiver cannot be empty";
     public static final String EMPTY_SENDER = "Sender cannot be empty";
+    public static final String EMPTY_MSG_ID = "Message id cannot be empty";
+    public static final String EMPTY_MSG = "Message not exists";
+    public static final String WRONG_RECEIVER = "User is not receiver of the message";
 
     private ChatMessageRepository chatMessageRepository;
 
@@ -81,6 +85,54 @@ public class MessageServiceImpl implements MessageService {
 
             throw new RestException(USER_NOT_EXIST, HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @Override
+    public void markChatMessageRead(UserDTO receiver, Long messageId) {
+        if (receiver == null) {
+            LOGGER.error("Receiver cannot be empty. Message won't be marked as read.");
+
+            throw new RestException(EMPTY_RECEIVER, HttpStatus.BAD_REQUEST);
+        }
+
+        ChatMessage message = getMessage(messageId);
+
+        if (receiverDoesNotMatch(receiver, message)) {
+            LOGGER.error("Wrong receiver: " + receiver.getUsername() + " for message: " + messageId);
+
+            throw new RestException(WRONG_RECEIVER, HttpStatus.BAD_REQUEST);
+        }
+
+        message.setRead(true);
+
+        chatMessageRepository.save(message);
+    }
+
+    private boolean receiverDoesNotMatch(UserDTO receiver, ChatMessage message) {
+        return !message.getReceiver().equals(receiver.getUsername());
+    }
+
+    private ChatMessage getMessage(Long messageId) {
+        if (messageId == null) {
+            LOGGER.error("Message id is empty. Message won't be marked as read.");
+
+            throw new RestException(EMPTY_MSG_ID, HttpStatus.BAD_REQUEST);
+        }
+
+        ChatMessage message = chatMessageRepository.findOne(messageId);
+
+        if (message == null) {
+            LOGGER.error("Message with id: " + messageId + " not exist.");
+
+            throw new RestException(EMPTY_MSG, HttpStatus.BAD_REQUEST);
+        }
+
+        return message;
+    }
+
+    @Override
+    public void markChatMessagesRead(UserDTO receiver, List<Long> messagesId) {
+        messagesId.forEach(messageId -> markChatMessageRead(receiver, messageId));
     }
 
     private void validateInput(String content, UserDTO sender, String receiver) {
