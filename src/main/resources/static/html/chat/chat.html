@@ -8,7 +8,7 @@
         <div class="panel-body">
             <ul class="media-list" style="height: 400px; overflow: auto;" scroll-glue>
 
-                <li class="media" ng-repeat="message in selectedChat.messages">
+                <li class="media" ng-repeat="message in selectedChat.messages track by $index">
 
                     <div class="media-body">
 

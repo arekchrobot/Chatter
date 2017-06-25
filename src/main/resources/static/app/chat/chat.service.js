@@ -19,6 +19,13 @@ angular.module("chatter.chatServices", [])
     }).factory("chatService", function() {
         var service = {};
 
+        service.initScope = function($scope) {
+            $scope.selectedUser = {};
+            $scope.selectedChat = {};
+
+            $scope.chat = {};
+        };
+
         service.getOrCreateChat = function(loggedUser, currentUser, $scope) {
             var chatFound = false;
             angular.forEach(loggedUser.chats, function(chat) {
@@ -31,9 +38,20 @@ angular.module("chatter.chatServices", [])
 
             if (!chatFound) {
                 $scope.selectedChat = {};
+                $scope.selectedChat.name = loggedUser.username + "_" + currentUser.username;
                 $scope.selectedChat.messages = [];
                 $scope.selectedUser = currentUser;
+
+                loggedUser.chats.push($scope.selectedChat);
             }
+        };
+
+        service.addMessageToCorrectChat = function(chats, message) {
+            angular.forEach(chats, function(chat){
+                if (chat.name == message.chat.name) {
+                    chat.messages.push(message);
+                }
+            });
         };
 
         return service;

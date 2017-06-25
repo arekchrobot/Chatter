@@ -17,7 +17,7 @@ public class MessageEndpoint {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MessageEndpoint.class);
 
-    public static final String MESSAGE_DELIVERY_URL = "/topic/message/receive";
+    public static final String MESSAGE_DELIVERY_URL = "/topic/message/receive/";
 
     private WebSocketTokenService webSocketTokenService;
 

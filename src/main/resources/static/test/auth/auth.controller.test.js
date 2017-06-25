@@ -13,6 +13,7 @@ describe('authController', function () {
         rootScope = _$rootScope_;
 
         $templateCache.put('html/auth/login.html', '');
+        $templateCache.put('html/chat/chat.html', '');
 
         authRestService = _authRestService_;
 

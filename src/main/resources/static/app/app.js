@@ -10,6 +10,8 @@ angular.module("chatter", [
     "chatter.authServices",
     "chatter.authController",
 
+    "chatter.notificationServices",
+
     "chatter.chatServices",
     "chatter.chatController"
 ])

@@ -22,6 +22,8 @@ module.exports = function(config) {
         'vendor/ng-idle/angular-idle.js',
         'vendor/angular-mocks/angular-mocks.js',
         'vendor/angular-scroll-glue/src/scrollglue.js',
+        'vendor/sockjs-client/dist/sockjs.js',
+        'vendor/stomp-websocket/lib/stomp.js',
         'app/**/*.js',
         'test/**/*.test.js'
     ],

@@ -16,7 +16,7 @@ angular.module("chatter.authController", []).config(function ($stateProvider) {
             function (returnedData) {
                 $rootScope.user = returnedData.data;
                 $scope.credentials = {};
-                $state.go("chat");
+                $state.go("chat",null, {reload:true, inherit: false, notify: true});
             }, function (returnedData) {
                 authService.loginError($scope, returnedData.data);
             });

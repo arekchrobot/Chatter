@@ -4,17 +4,19 @@ angular.module("chatter.chatController", []).config(function ($stateProvider) {
         templateUrl: "html/chat/chat.html",
         controller: "chatController"
     });
-}).controller("chatController", function ($rootScope, $scope, chatRestService, chatService) {
-
+}).controller("chatController", function ($rootScope, $scope, chatRestService, chatService, notificationWebSocketService) {
 
     chatRestService.getAllUsers(function(returnedData) {
         $scope.users = returnedData.data;
     });
 
-    $scope.selectedUser = {};
-    $scope.selectedChat = {};
+    chatService.initScope($scope);
 
-    $scope.chat = {};
+    notificationWebSocketService.receive().then(null, null, function(data){
+        chatService.addMessageToCorrectChat($rootScope.user.chats, data);
+    });
+
+    notificationWebSocketService.initialize($rootScope.user.socketToken);
 
     $scope.openChat = function(currentUser) {
         chatService.getOrCreateChat($rootScope.user, currentUser, $scope);

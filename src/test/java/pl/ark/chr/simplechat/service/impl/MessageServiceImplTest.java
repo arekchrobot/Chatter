@@ -17,6 +17,7 @@ import pl.ark.chr.simplechat.repository.ChatRepository;
 import pl.ark.chr.simplechat.repository.ChatterUserRepository;
 import pl.wkr.fluentrule.api.FluentExpectedException;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
@@ -62,11 +63,16 @@ public class MessageServiceImplTest {
         ChatterUser receiverUser = new ChatterUser();
         receiverUser.setUsername(receiver);
 
-        UserDTO currentUser = UserDTO.builder().username(sender).build();
+        UserDTO currentUser = UserDTO.builder().username(sender).chats(new ArrayList<>()).build();
 
         when(chatterUserRepository.findByUsername(any(String.class))).thenReturn(Optional.of(receiverUser));
         when(chatRepository.findByNameLike(any(String.class), any(String.class))).thenReturn(Optional.empty());
-        when(chatRepository.save(any(Chat.class))).thenAnswer(invocationOnMock -> invocationOnMock.getArguments()[0]);
+        when(chatRepository.save(any(Chat.class))).thenAnswer(invocationOnMock -> {
+            Chat chat = (Chat) invocationOnMock.getArguments()[0];
+            chat.setId(1L);
+
+            return chat;
+        });
         when(chatMessageRepository.save(any(ChatMessage.class))).thenAnswer(invocationOnMock -> invocationOnMock.getArguments()[0]);
 
         doAnswer(invocationOnMock -> {
