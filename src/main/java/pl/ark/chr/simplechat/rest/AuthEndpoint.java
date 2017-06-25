@@ -46,6 +46,7 @@ public class AuthEndpoint extends BaseRestEndpoint {
         super(sessionUtil);
         this.chatterUserService = chatterUserService;
         this.registerService = registerService;
+        this.webSocketTokenService = webSocketTokenService;
     }
 
     @POST("/login")

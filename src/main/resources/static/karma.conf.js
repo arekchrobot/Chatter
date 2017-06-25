@@ -21,6 +21,7 @@ module.exports = function(config) {
         'vendor/angular-ui-router/release/angular-ui-router.js',
         'vendor/ng-idle/angular-idle.js',
         'vendor/angular-mocks/angular-mocks.js',
+        'vendor/angular-scroll-glue/src/scrollglue.js',
         'app/**/*.js',
         'test/**/*.test.js'
     ],

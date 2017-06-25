@@ -1,5 +1,6 @@
 package pl.ark.chr.simplechat.service;
 
+import pl.ark.chr.simplechat.domain.ChatMessage;
 import pl.ark.chr.simplechat.dto.UserDTO;
 
 import java.util.List;
@@ -9,7 +10,7 @@ import java.util.List;
  */
 public interface MessageService {
 
-    void sendMessageToUser(String content, UserDTO sender, String receiver);
+    ChatMessage sendMessageToUser(String content, UserDTO sender, String receiver);
 
     void markChatMessageRead(UserDTO receiver, Long messageId);
 

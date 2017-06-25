@@ -1,0 +1,66 @@
+<h3 class="text-center">CHATTER</h3>
+<br/><br/>
+<div class="col-md-8">
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            RECENT CHAT HISTORY FOR USER : {{selectedUser.username}}
+        </div>
+        <div class="panel-body">
+            <ul class="media-list" style="height: 400px; overflow: auto;" scroll-glue>
+
+                <li class="media" ng-repeat="message in selectedChat.messages">
+
+                    <div class="media-body">
+
+                        <div class="media">
+                            <div class="media-body">
+                                {{message.content}}
+                                <br/>
+                                <small class="text-muted">{{message.sender}} | {{message.created | date : 'yyyy-MM-dd HH:mm:ss'}}</small>
+                                <hr/>
+                            </div>
+                        </div>
+
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="panel-footer">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Enter Message" ng-model="chat.message"/>
+                <span class="input-group-btn">
+                    <button class="btn btn-info" type="button" ng-click="sendMessage()">SEND</button>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-md-4">
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            USERS
+        </div>
+        <div class="panel-body">
+            <ul class="media-list">
+
+                <li class="media" ng-repeat="currentUser in users" ng-if="currentUser.username != user.username">
+
+                    <div class="media-body">
+
+                        <div class="media">
+                            <a ng-click="openChat(currentUser)">
+                                <div class="media-body">
+                                    <h5>{{currentUser.username}}</h5>
+                                </div>
+                            </a>
+                        </div>
+
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <br/>
+    <button class="btn btn-primary" ng-click="logout()">Logout</button>
+
+</div>

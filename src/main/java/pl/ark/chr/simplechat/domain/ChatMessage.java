@@ -1,7 +1,10 @@
 package pl.ark.chr.simplechat.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import pl.ark.chr.simplechat.serializer.ChatSerializer;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -36,6 +39,7 @@ public class ChatMessage extends BaseEntity {
         this.content = content;
     }
 
+    @Column(name = "created")
     public LocalDateTime getCreated() {
         return created;
     }
@@ -46,6 +50,7 @@ public class ChatMessage extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "chat_id", nullable = false)
+    @JsonSerialize(using = ChatSerializer.class)
     public Chat getChat() {
         return chat;
     }

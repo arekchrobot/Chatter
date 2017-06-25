@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import pl.ark.chr.simplechat.domain.ChatMessage;
 import pl.ark.chr.simplechat.rest.annotations.POSTTextPlain;
 import pl.ark.chr.simplechat.rest.annotations.PUT;
 import pl.ark.chr.simplechat.rest.annotations.RestController;
@@ -32,12 +33,10 @@ public class RestMessageEndpoint extends BaseRestEndpoint {
     }
 
     @POSTTextPlain("/send/{receiver}")
-    public boolean sendMessageToUser(HttpServletRequest request, @PathVariable("receiver") String receiver, @RequestBody String content) {
+    public ChatMessage sendMessageToUser(HttpServletRequest request, @PathVariable("receiver") String receiver, @RequestBody String content) {
         LOGGER.info("Sending message to user: " + receiver + " from user: " + sessionUtil.getCurrentUser(request).getUsername());
 
-        messageService.sendMessageToUser(content, sessionUtil.getCurrentUser(request), receiver);
-
-        return true;
+        return messageService.sendMessageToUser(content, sessionUtil.getCurrentUser(request), receiver);
     }
 
     @PUT("/markRead/{messageId}")

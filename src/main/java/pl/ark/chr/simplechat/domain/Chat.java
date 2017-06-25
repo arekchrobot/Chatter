@@ -29,7 +29,7 @@ public class Chat extends BaseEntity {
     }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "chat")
-    @OrderColumn(name = "created")
+    @OrderBy("created ASC")
     public List<ChatMessage> getMessages() {
         return messages;
     }

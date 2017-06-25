@@ -17,6 +17,7 @@ import pl.ark.chr.simplechat.websocket.service.WebSocketTokenService;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Created by Arek on 2017-06-22.
@@ -70,8 +71,12 @@ public class ChatterUserServiceImpl implements ChatterUserService {
     }
 
     @Override
-    public List<ChatterUser> getAll() {
-        return (List<ChatterUser>) chatterUserRepository.findAll();
+    public List<UserDTO> getAll() {
+        return ((List<ChatterUser>)chatterUserRepository.findAll()).stream()
+                .map(user -> UserDTO.builder()
+                        .username(user.getUsername())
+                        .build())
+                .collect(Collectors.toList());
     }
 
     private void validateCredentials(CredentialsDTO credentials) {

@@ -16,5 +16,5 @@ public interface ChatterUserService {
 
     Optional<ChatterUser> getByUsername(String username);
 
-    List<ChatterUser> getAll();
+    List<UserDTO> getAll();
 }

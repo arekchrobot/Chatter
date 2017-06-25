@@ -12,9 +12,9 @@ import java.util.Optional;
  */
 public interface ChatRepository extends CrudRepository<Chat, Long> {
 
-    @Query("SELECT c FROM Chat c JOIN FETCH c.messages WHERE c.name LIKE %?1%")
-    List<Chat> findByNameLikeAndFetchMessagesEagerly(String name);
+    @Query("SELECT DISTINCT c FROM Chat c LEFT JOIN FETCH c.messages WHERE c.name LIKE CONCAT('%', ?1, '%')")
+    List<Chat> findByNameLikeAndFetchMessagesEagerly(String sender);
 
-    @Query("SELECT c FROM Chat c WHERE c.name LIKE %?1% AND c.name LIKE %?2%")
+    @Query("SELECT c FROM Chat c WHERE c.name LIKE CONCAT('%', ?1, '%') AND c.name LIKE CONCAT('%', ?2, '%')")
     Optional<Chat> findByNameLike(String sender, String receiver);
 }

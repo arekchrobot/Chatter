@@ -8,6 +8,7 @@ import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.ark.chr.simplechat.domain.ChatterUser;
+import pl.ark.chr.simplechat.repository.RoleRepository;
 import pl.ark.chr.simplechat.service.ChatterUserService;
 
 import java.util.HashSet;
@@ -24,6 +25,9 @@ public class ChatterAuthorizingRealm extends AuthorizingRealm {
     @Autowired
     private ChatterUserService chatterUserService;
 
+    @Autowired
+    private RoleRepository roleRepository;
+
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
         String username;
@@ -38,7 +42,7 @@ public class ChatterAuthorizingRealm extends AuthorizingRealm {
         if (userOptional.isPresent()) {
             ChatterUser user = userOptional.get();
             Set<String> roles = new HashSet<>();
-            roles.add(user.getRole().getName());
+            roles.add(roleRepository.findOne(user.getRole().getId()).getName());
             SimpleAuthorizationInfo authInfo = new SimpleAuthorizationInfo(roles);
             authInfo.setStringPermissions(roles);
 

@@ -36,6 +36,7 @@ public class ShiroConfig {
         filterChainDefinitionMapping.put("/api/auth/register", "anon");
         filterChainDefinitionMapping.put("/api/auth/signout", "authc");
         filterChainDefinitionMapping.put("/api/message/**", "http[GET=USER_ROLE,POST=USER_ROLE,PUT=USER_ROLE,DELETE=USER_ROLE]");
+        filterChainDefinitionMapping.put("/api/user/**", "http[GET=USER_ROLE,POST=USER_ROLE,PUT=USER_ROLE,DELETE=USER_ROLE]");
         shiroFilter.setFilterChainDefinitionMap(filterChainDefinitionMapping);
 
         Map<String, Filter> filters = new HashMap<>();

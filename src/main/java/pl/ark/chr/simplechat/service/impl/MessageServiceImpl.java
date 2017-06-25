@@ -21,6 +21,7 @@ import pl.ark.chr.simplechat.util.ValidationUtil;
 import pl.ark.chr.simplechat.websocket.MessageEndpoint;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -59,7 +60,7 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public void sendMessageToUser(String content, UserDTO sender, String receiver) {
+    public ChatMessage sendMessageToUser(String content, UserDTO sender, String receiver) {
         validateInput(content, sender, receiver);
 
         LocalDateTime timestamp = LocalDateTime.now();
@@ -77,9 +78,16 @@ public class MessageServiceImpl implements MessageService {
                     .created(timestamp)
                     .build();
 
+            sender.getChats().stream()
+                    .filter(chat1 -> chat1.getId().equals(chat.getId()))
+                    .findFirst()
+                    .ifPresent(chat1 -> chat1.getMessages().add(message));
+
             String token = TokenGenerator.generateToken(receiver);
 
             simpMessagingTemplate.convertAndSend(MessageEndpoint.MESSAGE_DELIVERY_URL + token, chatMessageRepository.save(message));
+
+            return message;
         } else {
             LOGGER.error("Receiver not exists. Message won't be send.");
 
@@ -167,6 +175,9 @@ public class MessageServiceImpl implements MessageService {
             chat.setName(sender.getUsername() + CHAT_NAME_SPLITTER + receiver);
 
             chat = chatRepository.save(chat);
+            chat.setMessages(new ArrayList<>());
+
+            sender.getChats().add(chat);
         }
 
         return chat;
