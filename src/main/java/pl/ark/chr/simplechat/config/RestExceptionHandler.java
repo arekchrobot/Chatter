@@ -25,22 +25,18 @@ public class RestExceptionHandler {
 
     private Logger LOGGER = LoggerFactory.getLogger(RestExceptionHandler.class);
 
-    @ExceptionHandler(value = {RestException.class})
-    public ResponseEntity<ExceptionWrapper> restExceptionHandler(HttpServletRequest request, Locale locale, RestException e) {
-        logRequest(request, e);
-
-        ExceptionWrapper error = new ExceptionWrapper(e.getStatus().value(),e.getMessage());
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-        return new ResponseEntity<>(error, headers, e.getStatus());
-    }
-
     @ExceptionHandler(value = {RuntimeException.class})
     public ResponseEntity<ExceptionWrapper> runtimeErrorHandler(HttpServletRequest request, Locale locale, RuntimeException e) {
         logRequest(request, e);
 
-        ExceptionWrapper error = new ExceptionWrapper(HttpStatus.INTERNAL_SERVER_ERROR.value(),"Internal server error");
+        ExceptionWrapper error;
+
+        if (e instanceof RestException) {
+            RestException ex = (RestException) e;
+            error = new ExceptionWrapper(ex.getStatus().value(), ex.getMessage());
+        } else {
+            error = new ExceptionWrapper(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Internal server error");
+        }
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
@@ -48,18 +44,12 @@ public class RestExceptionHandler {
     }
 
     private void logRequest(HttpServletRequest request, RuntimeException e) {
-        try {
             String loggerMsg = new StringBuffer(70)
                     .append("Error executing url: ")
                     .append(HttpUtil.generateOriginalUrl(request))
-                    .append("POST".equalsIgnoreCase(request.getMethod()) ?
-                            request.getReader().lines().collect(Collectors.joining(System.lineSeparator())) : "")
                     .append(". With exception: ")
                     .append(e.toString())
                     .toString();
             LOGGER.info(loggerMsg, e);
-        } catch (IOException ex) {
-            LOGGER.info("No post body found for exception.");
-        }
     }
 }

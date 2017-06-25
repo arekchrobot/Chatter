@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Chatter</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <link rel="stylesheet" href="vendor/bootstrap/dist/css/bootstrap.css">
+        <script src="vendor/jquery/dist/jquery.min.js"></script>
+        <script src="vendor/angular/angular.js"></script>
+        <script src="vendor/angular-resource/angular-resource.js"></script>
+        <script src="vendor/angular-ui-router/release/angular-ui-router.js"></script>
+        <script src="vendor/ng-idle/angular-idle.js"></script>
+        <style type="text/css">
+            .container.custom-container {
+                padding: 25px;
+            }
+        </style>
+    </head>
+    <body ng-app="chatter" ng-controller="authController">
+        <div class="custom-container container">
+            <div ui-view></div>
+        </div>
+        <!--services-->
+        <script src="app/util/exceptionHandler.service.js"></script>
+        <script src="app/auth/auth.service.js"></script>
+
+        <!--controllers-->
+        <script src="app/auth/auth.controller.js"></script>
+
+        <!--main-->
+        <script src="app/directives.js"></script>
+        <script src="app/app.js"></script>
+    </body>
+</html>

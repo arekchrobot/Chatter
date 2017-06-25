@@ -1,0 +1,70 @@
+<div ng-show="template.isLogin" class="panel panel-default">
+    <div class="panel-heading">
+        <h2>Log in</h2>
+    </div>
+
+    <div class="alert alert-success" ng-if="registerSuccess">
+        {{registerSuccessMsg}}
+    </div>
+
+    <div class="alert alert-danger" ng-if="loginError">
+        {{loginErrorMsg}}
+    </div>
+
+    <div class="panel-body">
+
+        <form ng-submit="login()">
+            <div class="form-group">
+                <input type="text" placeholder="username" class="form-control top" ng-model="credentials.username">
+            </div>
+            <div class="form-group">
+                <input type="password" placeholder="Password" class="form-control bottom"
+                       ng-model="credentials.password">
+            </div>
+            <button class="btn btn-lg btn-primary center-block" type="submit">Login</button>
+            <br/>
+            <a class="text-muted center-block" ng-click="template.isLogin = !template.isLogin">Register</a>
+        </form>
+    </div>
+
+</div>
+<div ng-hide="template.isLogin" class="panel panel-default">
+    <div class="panel-heading">
+        <h2>Register</h2>
+    </div>
+
+    <div class="alert alert-danger" ng-if="registerError">
+        {{registerErrorMsg}}
+    </div>
+
+    <div class="panel-body">
+        <form id="forms.registerForm" name="forms.registerForm" novalidate ng-submit="register()">
+            <div class="form-group"
+                 ng-class="{'has-error':(forms.registerForm.userEmail.$error.required && forms.registerForm.userEmail.$touched) || forms.registerForm.userEmail.$error.email, 'has-success':!forms.registerForm.userEmail.$error.required || (!forms.registerForm.userEmail.$error.email && forms.registerForm.userEmail.$touched)}">
+                <input type="text" placeholder="username" class="form-control top" ng-model="registerData.user.username"
+                       id="userEmail" name="userEmail" required>
+                <span class="help-block"
+                      ng-show="forms.registerForm.userEmail.$error.required && forms.registerForm.userEmail.$touched">Username is required</span>
+            </div>
+            <div class="form-group"
+                 ng-class="{'has-error':forms.registerForm.pass.$error.required && forms.registerForm.pass.$touched, 'has-success':!forms.registerForm.pass.$error.required}">
+                <input type="password" placeholder="password" class="form-control middle"
+                       ng-model="registerData.user.password" id="pass" name="pass" required>
+                <span class="help-block"
+                      ng-show="forms.registerForm.pass.$error.required && forms.registerForm.pass.$touched">Password is required</span>
+            </div>
+            <div class="form-group"
+                 ng-class="{'has-error':forms.registerForm.rePass.$error.pwmatch, 'has-success':!forms.registerForm.rePass.$error.pwmatch && forms.registerForm.pass.$touched && !forms.registerForm.userEmail.$error.required && !forms.registerForm.userEmail.$error.email}">
+                <input type="password" placeholder="re-password" class="form-control bottom"
+                       ng-model="registerData.user.confirmPassword" id="rePass" pw-check="pass" name="rePass">
+                <span class='help-block'
+                      ng-show='forms.registerForm.rePass.$error.pwmatch'>Passwords do not match</span>
+            </div>
+            <button class="btn btn-lg btn-success center-block" type="submit" ng-disabled="!forms.registerForm.$valid">
+                Register
+            </button>
+            <br/>
+            <a class="text-muted center-block" ng-click="template.isLogin = !template.isLogin">Login</a>
+        </form>
+    </div>
+</div>

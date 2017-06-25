@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
-import pl.ark.chr.simplechat.ChatterProperties;
 import pl.ark.chr.simplechat.service.ChatterUserService;
 
 import javax.servlet.Filter;
@@ -27,12 +26,6 @@ import java.util.Map;
 @Configuration
 public class ShiroConfig {
 
-    @Autowired
-    private ChatterProperties chatterProperties;
-
-    @Autowired
-    private ChatterUserService chatterUserService;
-
     @Bean
     public ShiroFilterFactoryBean shiroFilter() {
         ShiroFilterFactoryBean shiroFilter = new ShiroFilterFactoryBean();
@@ -40,13 +33,15 @@ public class ShiroConfig {
 
         Map<String, String> filterChainDefinitionMapping = new HashMap<>();
         filterChainDefinitionMapping.put("/api/auth/login", "anon");
+        filterChainDefinitionMapping.put("/api/auth/register", "anon");
         filterChainDefinitionMapping.put("/api/auth/signout", "authc");
-        filterChainDefinitionMapping.put("/api/**", "authc");
+        filterChainDefinitionMapping.put("/api/message/**", "http[GET=USER_ROLE,POST=USER_ROLE,PUT=USER_ROLE,DELETE=USER_ROLE]");
         shiroFilter.setFilterChainDefinitionMap(filterChainDefinitionMapping);
 
         Map<String, Filter> filters = new HashMap<>();
         filters.put("anon", new AnonymousFilter());
         filters.put("authc", new FormAuthenticationFilter());
+        filters.put("http", new HttpMethodRolesAuthorizationFilter());
 
         shiroFilter.setFilters(filters);
 
@@ -71,7 +66,7 @@ public class ShiroConfig {
     @Bean(name = "realm")
     @DependsOn("lifecycleBeanPostProcessor")
     public AuthorizingRealm realm() {
-        AuthorizingRealm realm = new ChatterAuthorizingRealm(chatterUserService);
+        AuthorizingRealm realm = new ChatterAuthorizingRealm();
         realm.setCredentialsMatcher(credentialsMatcher());
         return realm;
     }
@@ -85,7 +80,7 @@ public class ShiroConfig {
 
     @Bean(name = "passwordService")
     public PasswordService passwordService() {
-        return new BCryptPasswordService(chatterProperties);
+        return new BCryptPasswordService();
     }
 
     @Bean

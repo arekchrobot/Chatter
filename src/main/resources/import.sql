@@ -1,0 +1,1 @@
+INSERT INTO chatter_role(id, name) VALUES (1, 'USER_ROLE');

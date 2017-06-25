@@ -5,6 +5,7 @@ import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.ark.chr.simplechat.domain.ChatterUser;
 import pl.ark.chr.simplechat.service.ChatterUserService;
@@ -20,11 +21,8 @@ import java.util.Set;
 @Component
 public class ChatterAuthorizingRealm extends AuthorizingRealm {
 
+    @Autowired
     private ChatterUserService chatterUserService;
-
-    public ChatterAuthorizingRealm(ChatterUserService chatterUserService) {
-        this.chatterUserService = chatterUserService;
-    }
 
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {

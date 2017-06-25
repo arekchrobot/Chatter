@@ -22,3 +22,7 @@ mvnw
 # NetBeans files #
 **/nb-configuration.xml
 **/nbactions.xml
+
+# FrontEnd files #
+**/vendor/**
+**/node_modules/**

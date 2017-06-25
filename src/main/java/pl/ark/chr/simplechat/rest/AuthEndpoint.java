@@ -50,7 +50,7 @@ public class AuthEndpoint extends BaseRestEndpoint {
 
     @POST("/login")
     public UserDTO login(HttpServletRequest request, @RequestBody CredentialsDTO credentials) {
-        UsernamePasswordToken authToken = new UsernamePasswordToken(credentials.getUsername().toLowerCase(), credentials.getPassword(), true);
+        UsernamePasswordToken authToken = new UsernamePasswordToken(credentials.getUsername(), credentials.getPassword(), true);
 
         LOGGER.info("Logging user: " + credentials.getUsername());
 

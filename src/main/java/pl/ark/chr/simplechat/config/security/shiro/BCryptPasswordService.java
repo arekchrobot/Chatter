@@ -12,12 +12,13 @@ import pl.ark.chr.simplechat.ChatterProperties;
 @Component
 public class BCryptPasswordService implements PasswordService {
 
+    @Autowired
     private ChatterProperties chatterProperties;
 
-    @Autowired
-    public BCryptPasswordService(ChatterProperties chatterProperties) {
-        this.chatterProperties = chatterProperties;
-    }
+
+//    public BCryptPasswordService(ChatterProperties chatterProperties) {
+//        this.chatterProperties = chatterProperties;
+//    }
 
     @Override
     public String encryptPassword(Object plaintextPassword) throws IllegalArgumentException {
