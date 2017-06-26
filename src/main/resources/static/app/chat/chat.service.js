@@ -49,7 +49,15 @@ angular.module("chatter.chatServices", [])
         service.addMessageToCorrectChat = function(chats, message) {
             angular.forEach(chats, function(chat){
                 if (chat.name == message.chat.name) {
-                    chat.messages.push(message);
+                    var messageDuplicate = false;
+                    angular.forEach(chat.messages, function(msg){
+                       if(msg.id == message.id) {
+                           messageDuplicate = true;
+                       }
+                    });
+                    if(!messageDuplicate) {
+                        chat.messages.push(message);
+                    }
                 }
             });
         };

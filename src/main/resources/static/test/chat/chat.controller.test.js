@@ -13,6 +13,7 @@ describe('chatController', function() {
         httpBackend = _$httpBackend_;
 
         $templateCache.put('html/chat/chat.html', '');
+        $templateCache.put('html/auth/login.html', '');
 
         chatController = function() {
             return $controller("chatController", {
