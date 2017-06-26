@@ -57,5 +57,12 @@ angular.module("chatter.notificationServices", [])
             }
         };
 
+        service.closeConnection = function() {
+            console.log("disconnecting");
+            socket.client.unsubscribe();
+            socket.client.disconnect();
+            socket.ws.close();
+        };
+
         return service;
     });

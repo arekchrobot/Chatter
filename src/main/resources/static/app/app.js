@@ -16,7 +16,11 @@ angular.module("chatter", [
     "chatter.chatController"
 ])
 .constant("REST_API_PREFIX", "/api/")
-.config(function (IdleProvider, KeepaliveProvider) {
+.config(function (IdleProvider, KeepaliveProvider, $urlRouterProvider) {
+
+    $urlRouterProvider
+        .when("/", "login")
+        .otherwise("login");
 
     IdleProvider.idle(10 * 60); //10 minutes idle
     IdleProvider.timeout(30); //after 30 seconds idle, time the user out

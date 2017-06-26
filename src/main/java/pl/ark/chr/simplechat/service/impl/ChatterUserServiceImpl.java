@@ -79,6 +79,13 @@ public class ChatterUserServiceImpl implements ChatterUserService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public void updateChatsForUser(UserDTO user) {
+        if (user != null) {
+            user.setChats(chatRepository.findByNameLikeAndFetchMessagesEagerly(user.getUsername()));
+        }
+    }
+
     private void validateCredentials(CredentialsDTO credentials) {
         if (credentials == null) {
             LOGGER.error("Credentials are null. Login failed.");

@@ -84,7 +84,9 @@ public class AuthEndpoint extends BaseRestEndpoint {
 
     @GET("/logged")
     public UserDTO isLogged(HttpServletRequest request) {
-        return sessionUtil.getCurrentUser(request);
+        UserDTO currentUser = sessionUtil.getCurrentUser(request);
+        chatterUserService.updateChatsForUser(currentUser);
+        return currentUser;
     }
 
     @POST("/register")

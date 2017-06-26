@@ -27,5 +27,9 @@ angular.module("chatter.chatController", []).config(function ($stateProvider) {
             $scope.selectedChat.messages.push(returnedData.data);
             $scope.chat.message = "";
         });
+    };
+
+    $scope.closeConnection = function() {
+        notificationWebSocketService.closeConnection();
     }
 });

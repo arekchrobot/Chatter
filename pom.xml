@@ -137,6 +137,7 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
+					<mainClass>pl.ark.chr.simplechat.SimpleChatApplication</mainClass>
 					<jvmArguments>-Dfile.encoding=UTF8</jvmArguments>
 				</configuration>
 			</plugin>
